@@ -15,7 +15,7 @@ PACKAGE_URL = 'git+https://github.com/carlosibm/state_times'
 
 class State_Timer(BaseTransformer):
     '''
-    The docstring of the function will show as the function description in the UI.
+    For a selected metric calculates the amount of time in minutes it has been in that  state since the last change in state.
     '''
 
     def __init__(self, state_column, state_metric_name):
@@ -102,7 +102,9 @@ class State_Timer(BaseTransformer):
     def build_ui(cls):
 
         inputs = []
-        inputs.append(ui.UISingle(name='state_column', datatype=str, description='Name of column you want to measure state time in minutes.') )
+        inputs.append(UISingleItem(name='state_column', datatype=float, description='Name of column you want to measure state time in minutes.'))
+        inputs.append(ui.UISingle(name='state_metric_name', datatype=str, description='State name to measure state time in minutes.') )
+
 
         # Add output aruguments for each state metric_Name
         outputs = []
