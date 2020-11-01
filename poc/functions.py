@@ -102,7 +102,7 @@ class State_Timer(BaseTransformer):
     def build_ui(cls):
 
         inputs = []
-        inputs.append(UISingleItem(name='state_column', datatype=float, description='Name of column you want to measure state time in minutes.'))
+        inputs.append(ui.UISingleItem(name='state_column', datatype=float, description='Name of column you want to measure state time in minutes.'))
         inputs.append(ui.UISingle(name='state_metric_name', datatype=str, description='State name to measure state time in minutes.') )
 
 
