@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 # Specify the URL to your package here.
 # This URL must be accessible via pip install
 
-PACKAGE_URL = 'git+https://github.com/<path_to_repository>@'
+PACKAGE_URL = 'git+https://github.com/carlosibm/state_times
 
 
 class State_Timer(BaseTransformer):
