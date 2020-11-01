@@ -27,6 +27,7 @@ entity = Equipment(name = entity_type_name,
 entity.register(raise_error=False)
 
 #Register function so that you can see it in the UI
+db.unregister_functions(["State_Timer"])
 db.register_functions([State_Timer])
 
 
