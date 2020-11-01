@@ -26,6 +26,10 @@ entity = Equipment(name = entity_type_name,
 
 entity.register(raise_error=False)
 
+#Register function so that you can see it in the UI
+db.register_functions([State_Timer])
+
+
 meta = db.get_entity_type(entityType)
 jobsettings = {'_production_mode': False,
                '_start_ts_override': dt.datetime.utcnow() - dt.timedelta(days=10),
@@ -46,7 +50,6 @@ df = db.read_table(table_name=entity_type_name, schema=db_schema)
 print(df.head())
 
 print ( "Done registering  entity" )
-
 
 fn = State_Timer(state_column='runningstatus', state_metric_name='RUNNING')
 df = fn.execute_local_test(db=db, db_schema=db_schema, generate_days=1,to_csv=True)
@@ -78,11 +81,9 @@ df = pd.DataFrame({'evt_timestamp': [pd.Timestamp('2020-04-10 07:26:14.687196'),
 fn.execute_local_test(db=db, db_schema=db_schema, df=df)
 '''
 
+
+
 '''
-Register function so that you can see it in the UI
-
-
-db.register_functions([State_Timer])
 meta = db.get_entity_type(entityType)
 jobsettings = {}
 jobsettings = {'_production_mode': False,
