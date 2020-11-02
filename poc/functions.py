@@ -49,12 +49,12 @@ class State_Timer(BaseTransformer):
         logger.debug(simulation_data)
 
         logger.debug("List of unique equipment")
-        asset_list = simulation_data['deviceid'].unique().tolist()
+        asset_list = simulation_data['id'].unique().tolist()
         logger.debug(asset_list)
 
         for asset in asset_list:
             logger.debug("Get rows just for device %s --" % asset)
-            df_out = simulation_data.loc[simulation_data['deviceid'] == asset]
+            df_out = simulation_data.loc[simulation_data['id'] == asset]
             logger.debug(df_out)
             rows = [list(r) for i, r in df_out.iterrows()]
             first_row = True
@@ -76,7 +76,7 @@ class State_Timer(BaseTransformer):
                             logger.debug(mins_running.total_seconds() / 60)
                             # Update original dataframe with calculated minutes running
                             simulation_data.loc[
-                                (simulation_data['deviceid'] == asset) & (simulation_data['evt_timestamp'] == row[0]), [
+                                (simulation_data['id'] == asset) & (simulation_data['evt_timestamp'] == row[0]), [
                                     item]] = mins_running.total_seconds() / 60
                 else:
                     first_row = False
@@ -85,7 +85,7 @@ class State_Timer(BaseTransformer):
 
             for item in states:
                 logger.debug("\n -- %s Device total mins running in state %s -- \n" % (asset, item))
-                logger.debug(simulation_data.loc[simulation_data['deviceid'] == asset, item].sum())
+                logger.debug(simulation_data.loc[simulation_data['id'] == asset, item].sum())
                 logger.debug("\n ---- \n")
 
         logger.debug('simulation_data------')
