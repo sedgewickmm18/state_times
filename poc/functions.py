@@ -19,7 +19,7 @@ class State_Timer(BaseTransformer):
     '''
 
     def __init__(self, state_column, state_metric_name):
-        print ( 'state_column= %s  state_metric_name= %s ' %(state_column, state_metric_name) )
+        logger.debug( 'state_column= %s  state_metric_name= %s ' %(state_column, state_metric_name) )
         # Input column that has status of the system liked stopped or running  0 or 1
         self.state_column = state_column
         # Output column  metric_name that  time in minutes will be returned for
@@ -30,69 +30,69 @@ class State_Timer(BaseTransformer):
         super().__init__()
 
     def execute(self, df ):
-        print("start ----- %s " % self.state_column)
+        logger.debug("start ----- %s " % self.state_column)
         simulation_data = df
-        print(simulation_data.head())
+        logger.debug(simulation_data.head())
 
         # List unique values in the df['name'] column
-        print('List of Running Status')
+        logger.debug('List of Running Status')
         states = simulation_data[self.state_column].unique()
-        print(states)
+        logger.debug(states)
 
         # Initialize status you need to find running times for
         pd.set_option('display.max_columns', None)
         for state in states:
             simulation_data[state] = 0
 
-        print("Original Simulation Data to test downtime calculations")
+        logger.debug("Original Simulation Data to test downtime calculations")
         orig_simulation_data = simulation_data
-        print(simulation_data)
+        logger.debug(simulation_data)
 
-        print("List of unique equipment")
+        logger.debug("List of unique equipment")
         asset_list = simulation_data['deviceid'].unique().tolist()
-        print(asset_list)
+        logger.debug(asset_list)
 
         for asset in asset_list:
-            print("Get rows just for device %s --" % asset)
+            logger.debug("Get rows just for device %s --" % asset)
             df_out = simulation_data.loc[simulation_data['deviceid'] == asset]
-            print(df_out)
+            logger.debug(df_out)
             rows = [list(r) for i, r in df_out.iterrows()]
             first_row = True
 
             for row in rows:
                 if first_row == False:
-                    print("Row")
-                    print(row)
-                    print("-------laststatus_timestamp %s" % laststatus_timestamp)
+                    logger.debug("Row")
+                    logger.debug(row)
+                    logger.debug("-------laststatus_timestamp %s" % laststatus_timestamp)
 
                     # Check what state row is in and calculate mins_running
                     for item in states:
-                        print("Checking if current row  %s is in state %s" % (row[4], item))
+                        logger.debug("Checking if current row  %s is in state %s" % (row[4], item))
                         if row[4] == item:
-                            print("Match  %s current time  %s and last status time %s" % (
+                            logger.debug("Match  %s current time  %s and last status time %s" % (
                             item, row[0], laststatus_timestamp))
                             mins_running = row[0] - laststatus_timestamp
-                            print("mins %s" % item)
-                            print(mins_running.total_seconds() / 60)
+                            logger.debug("mins %s" % item)
+                            logger.debug(mins_running.total_seconds() / 60)
                             # Update original dataframe with calculated minutes running
                             simulation_data.loc[
                                 (simulation_data['deviceid'] == asset) & (simulation_data['evt_timestamp'] == row[0]), [
                                     item]] = mins_running.total_seconds() / 60
                 else:
                     first_row = False
-                print("Last status_timestamp %s " % row[0])
+                logger.debug("Last status_timestamp %s " % row[0])
                 laststatus_timestamp = row[0]
 
             for item in states:
-                print("\n -- %s Device total mins running in state %s -- \n" % (asset, item))
-                print(simulation_data.loc[simulation_data['deviceid'] == asset, item].sum())
-                print("\n ---- \n")
+                logger.debug("\n -- %s Device total mins running in state %s -- \n" % (asset, item))
+                logger.debug(simulation_data.loc[simulation_data['deviceid'] == asset, item].sum())
+                logger.debug("\n ---- \n")
 
-        print('simulation_data------')
-        print( simulation_data.head() )
-        print('orig_simulation_data-----')
-        print( orig_simulation_data.head() )
-        print('column of minutes being returned-----')
+        logger.debug('simulation_data------')
+        logger.debug( simulation_data.head() )
+        logger.debug('orig_simulation_data-----')
+        logger.debug( orig_simulation_data.head() )
+        logger.debug('column of minutes being returned-----')
         simulation_data[self.state_metric_name]
 
         return simulation_data[self.state_metric_name]
