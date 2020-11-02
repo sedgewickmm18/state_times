@@ -51,12 +51,12 @@ class State_Timer(BaseTransformer):
         logger.debug(simulation_data)
 
         logger.debug("List of unique equipment")
-        asset_list = simulation_data['id'].unique().tolist()
+        asset_list = simulation_data['deviceid'].unique().tolist()
         logger.debug(asset_list)
 
         for asset in asset_list:
             logger.debug("Get rows just for device %s --" % asset)
-            df_out = simulation_data.loc[simulation_data['id'] == asset]
+            df_out = simulation_data.loc[simulation_data['deviceid'] == asset]
             logger.debug(df_out)
 
             rows = [list(r) for i, r in df_out.iterrows()]
