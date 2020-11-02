@@ -81,7 +81,7 @@ class State_Timer(BaseTransformer):
                             logger.debug(mins_running.total_seconds() / 60)
                             # Update original dataframe with calculated minutes running
                             simulation_data.loc[
-                                (simulation_data['id'] == asset) & (simulation_data['evt_timestamp'] == row[0]), [
+                                (simulation_data['deviceid'] == asset) & (simulation_data['evt_timestamp'] == row[0]), [
                                     item]] = mins_running.total_seconds() / 60
                 else:
                     first_row = False
