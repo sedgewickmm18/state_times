@@ -33,78 +33,72 @@ class State_Timer(BaseTransformer):
         logger.debug("start state_column ----- %s " % self.state_column)
         logger.debug("start state_metric_name ----- %s " % self.state_metric_name)
 
-        simulation_data = df
-        logger.debug(simulation_data.head())
-
         # List unique values in the df['name'] column
         logger.debug('List of Running Status')
-        states = simulation_data[self.state_column].unique()
+        states = df[self.state_column].unique()
         logger.debug(states)
 
-        # Initialize metric name state with 0 minutes
+        # Initialize status you need to find running times for
         pd.set_option('display.max_columns', None)
         for state in states:
-            simulation_data[state] = 0
+            df[state] = 0
 
         logger.debug("Original Simulation Data to test downtime calculations")
-        orig_simulation_data = simulation_data
-        simulation_data[self.state_metric_name] = 0
-        logger.debug(simulation_data)
+        orig_df = df
+        logger.debug(df)
 
         logger.debug("List of unique equipment")
-        entity_index_name = simulation_data.index.names[0]
-        time_index_name = simulation_data.index.names[1]
-        simulation_data.reset_index(inplace=True)
-        logger.debug('Here', entity_index_name, time_index_name, simulation_data.columns)
-        asset_list = simulation_data[entity_index_name].unique().tolist()
+        asset_list = df['deviceid'].unique().tolist()
         logger.debug(asset_list)
 
+        logger.debug("Analyze Index")
         for asset in asset_list:
-            logger.debug("Get rows just for device %s --" % asset)
-            df_out = simulation_data.loc[simulation_data[entity_index_name] == asset]
-            logger.debug(df_out)
-            rows = [list(r) for i, r in df_out.iterrows()]
+            logger.debug("Get rows just for single asset %s --" % asset)
+            df_asset = df.loc[df.deviceid == asset]
+            logger.debug(df_asset)
+
+            # rows = [list(r) for i, r in df_asset.iterrows()]
             first_row = True
-            state_column_idx = list(df_out.columns).index(self.state_column)
+            # self.state_column_idx = list(df_asset.columns).index(self.state_column)
 
-            for row in rows:
+            for index, row in df_asset.iterrows():
                 if first_row == False:
-                    logger.debug("Row")
-                    logger.debug(row)
-                    logger.debug("-------laststatus_timestamp %s" % laststatus_timestamp)
+                    logger.debug("iterate rows")
+                    logger.debug(row['evt_timestamp'], row['deviceid'], row[self.state_column])
 
-                    # Check what state row is in and calculate mins_running
-                    for item in states:
-                        logger.debug("Checking if current row  %s is in state %s" % (state_column_idx, item))
-                        if row[4] == item:
-                            logger.debug("Match  %s current time  %s and last status time %s" % (
-                                item, row[1], laststatus_timestamp))
-                            mins_running = row[1] - laststatus_timestamp
-                            logger.debug("mins %s" % item)
-                            logger.debug(mins_running.total_seconds() / 60)
-                            # Update original dataframe with calculated minutes running
-                            simulation_data.loc[
-                                (simulation_data[entity_index_name] == asset) & (
-                                            simulation_data[time_index_name] == row[1]), [
-                                    item]] = mins_running.total_seconds() / 60
+                    # Calculate mins running
+                    mins_running = row['evt_timestamp'] - laststatus_timestamp
+                    laststatus_timestamp = row['evt_timestamp']
+                    logger.debug("New status_timestamp %s " % laststatus_timestamp)
+                    logger.debug("mins_running %s " % mins_running)
+                    # Update original dataframe with calculated minutes running
+                    df.loc[
+                        (df['deviceid'] == asset) & (
+                                    df['evt_timestamp'] == row['evt_timestamp']), [
+                            row[self.state_column]]] = mins_running.total_seconds() / 60
+
+                    # df.loc[(df['deviceid'] == asset) & (df['evt_timestamp'] == row['evt_timestamp'], df[self.state_metric_name]  = mins_running.total_seconds() / 60
                 else:
+                    logger.debug("First Row")
+                    logger.debug(row['evt_timestamp'], row['deviceid'], row[self.state_column])
                     first_row = False
-                logger.debug("Last status_timestamp %s " %row[1])
-                laststatus_timestamp = row[1]
+                    laststatus_timestamp = row['evt_timestamp']
+                logger.debug("Previous status_timestamp %s " % laststatus_timestamp)
 
             for item in states:
                 logger.debug("\n -- %s Device total mins running in state %s -- \n" % (asset, item))
-                logger.debug(simulation_data.loc[simulation_data[entity_index_name] == asset, item].sum())
+                logger.debug(df.loc[df['deviceid'] == asset, item].sum())
                 logger.debug("\n ---- \n")
 
-        logger.debug('simulation_data------')
-        logger.debug( simulation_data.head() )
-        logger.debug('orig_simulation_data-----')
-        logger.debug( orig_simulation_data.head() )
-        logger.debug('column of minutes being returned-----')
-        simulation_data.set_index([entity_index_name, time_index_name], inplace=True)
-        return simulation_data[self.state_metric_name]
+        # logger.debug("\n -- iloc -- \n")
+        # logger.debug(df.iloc[(df['Age'] < 30).values, [1, 3]])
 
+        logger.debug(df)
+        logger.debug('orig_df |||  ')
+        logger.debug(orig_df)
+        logger.debug('Column we are returning with state_metric_name and minutes |||  ')
+        logger.debug(df[self.state_metric_name])
+        return df[self.state_metric_name]
 
     @classmethod
     def build_ui(cls):
