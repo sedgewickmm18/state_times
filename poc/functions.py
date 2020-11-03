@@ -60,7 +60,8 @@ class State_Timer(BaseTransformer):
         logger.debug("Analyze Index")
         for asset in asset_list:
             logger.debug("Get rows just for single asset %s --" % asset)
-            df_asset = df.loc[df.deviceid == asset]
+            df_asset = df.loc[df[entity_index_name] == asset]
+            logger.debug("Rows just for %s" %asset )
             logger.debug(df_asset)
 
             # rows = [list(r) for i, r in df_asset.iterrows()]
@@ -70,7 +71,7 @@ class State_Timer(BaseTransformer):
             for index, row in df_asset.iterrows():
                 if first_row == False:
                     logger.debug("iterate rows")
-                    logger.debug(row['evt_timestamp'], row['deviceid'], row[self.state_column])
+                    logger.debug(row['evt_timestamp'], row[df[entity_index_name]], row[self.state_column])
 
                     # Calculate mins running
                     mins_running = row['evt_timestamp'] - laststatus_timestamp
@@ -86,14 +87,14 @@ class State_Timer(BaseTransformer):
                     # df.loc[(df['deviceid'] == asset) & (df['evt_timestamp'] == row['evt_timestamp'], df[self.state_metric_name]  = mins_running.total_seconds() / 60
                 else:
                     logger.debug("First Row")
-                    logger.debug(row['evt_timestamp'], row['deviceid'], row[self.state_column])
+                    logger.debug(row['evt_timestamp'], row[df[entity_index_name]], row[self.state_column])
                     first_row = False
                     laststatus_timestamp = row['evt_timestamp']
                 logger.debug("Previous status_timestamp %s " % laststatus_timestamp)
 
             for item in states:
                 logger.debug("\n -- %s Device total mins running in state %s -- \n" % (asset, item))
-                logger.debug(df.loc[df['deviceid'] == asset, item].sum())
+                logger.debug(df.loc[df[entity_index_name] == asset, item].sum())
                 logger.debug("\n ---- \n")
 
         # logger.debug("\n -- iloc -- \n")
