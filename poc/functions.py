@@ -34,6 +34,9 @@ class State_Timer(BaseTransformer):
         logger.debug("start df ----- %s " % df)
         logger.debug("start state_column ----- %s " % self.state_column)
         logger.debug("start state_metric_name ----- %s " % self.state_metric_name)
+        logger.debug("Original Simulation Data looking at rows")
+        for row in df.iterrows():
+            print(row)
 
         # List unique values in the df['name'] column
         logger.debug('List of Running Status')
@@ -45,8 +48,13 @@ class State_Timer(BaseTransformer):
         for state in states:
             df[state] = 0
 
+        logger.debug("Debugging")
+        entity_index_name = df.index.names[0]
+        time_index_name = df.index.names[1]
+        df.reset_index(inplace=True)
+        logger.debug('Here are entity_index_name, time_index_name, df.columns ', entity_index_name, time_index_name, df.columns)
+        asset_list = df[entity_index_name].unique().tolist()
         logger.debug("List of unique equipment")
-        asset_list = df.id.unique().tolist()
         logger.debug(asset_list)
 
         logger.debug("Analyze Index")
