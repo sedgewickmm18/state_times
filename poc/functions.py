@@ -30,6 +30,7 @@ class State_Timer(BaseTransformer):
         super().__init__()
 
     def execute(self, df ):
+        logger.debug("start df ----- %s " % df)
         logger.debug("start state_column ----- %s " % self.state_column)
         logger.debug("start state_metric_name ----- %s " % self.state_metric_name)
 
@@ -45,10 +46,9 @@ class State_Timer(BaseTransformer):
 
         logger.debug("Original Simulation Data to test downtime calculations")
         orig_df = df
-        logger.debug(df)
 
         logger.debug("List of unique equipment")
-        asset_list = df['deviceid'].unique().tolist()
+        asset_list = df.id.unique().tolist()
         logger.debug(asset_list)
 
         logger.debug("Analyze Index")
@@ -94,10 +94,10 @@ class State_Timer(BaseTransformer):
         # logger.debug(df.iloc[(df['Age'] < 30).values, [1, 3]])
 
         logger.debug(df)
-        logger.debug('orig_df |||  ')
-        logger.debug(orig_df)
         logger.debug('Column we are returning with state_metric_name and minutes |||  ')
         logger.debug(df[self.state_metric_name])
+        logger.debug('Final df')
+        logger.debug(df)
         return df[self.state_metric_name]
 
     @classmethod
