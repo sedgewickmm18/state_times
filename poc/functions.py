@@ -65,7 +65,7 @@ class State_Timer(BaseTransformer):
             logger.debug(df_out)
             rows = [list(r) for i, r in df_out.iterrows()]
             first_row = True
-            state_column_idx = list(df_out.columns).index(state_column)
+            state_column_idx = list(df_out.columns).index(self.state_column)
 
             for row in rows:
                 if first_row == False:
@@ -89,7 +89,7 @@ class State_Timer(BaseTransformer):
                                     item]] = mins_running.total_seconds() / 60
                 else:
                     first_row = False
-                logger.debug("Last status_timestamp %s " % row[01)
+                logger.debug("Last status_timestamp %s " %row[1])
                 laststatus_timestamp = row[1]
 
             for item in states:
