@@ -35,8 +35,8 @@ class State_Timer(BaseTransformer):
         logger.debug("start state_column ----- %s " % self.state_column)
         logger.debug("start state_metric_name ----- %s " % self.state_metric_name)
         logger.debug("Original Simulation Data looking at rows")
-        for row in df.iterrows():
-            print(row)
+        for index, row in df.iterrows():
+            logger.debug(row)
 
         # List unique values in the df['name'] column
         logger.debug('List of Running Status')
