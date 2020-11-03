@@ -41,28 +41,31 @@ class State_Timer(BaseTransformer):
         states = simulation_data[self.state_column].unique()
         logger.debug(states)
 
-        # Initialize status you need to find running times for
+        # Initialize metric name state with 0 minutes
         pd.set_option('display.max_columns', None)
         for state in states:
             simulation_data[state] = 0
 
         logger.debug("Original Simulation Data to test downtime calculations")
         orig_simulation_data = simulation_data
+        simulation_data[self.state_metric_name] = 0
         logger.debug(simulation_data)
 
         logger.debug("List of unique equipment")
-        asset_list = simulation_data['deviceid'].unique().tolist()
+        entity_index_name = simulation_data.index.names[0]
+        time_index_name = simulation_data.index.names[1]
+        simulation_data.reset_index(inplace=True)
+        logger.debug('Here', entity_index_name, time_index_name, simulation_data.columns)
+        asset_list = simulation_data[entity_index_name].unique().tolist()
         logger.debug(asset_list)
 
         for asset in asset_list:
             logger.debug("Get rows just for device %s --" % asset)
-            df_out = simulation_data.loc[simulation_data['deviceid'] == asset]
+            df_out = simulation_data.loc[simulation_data[entity_index_name] == asset]
             logger.debug(df_out)
-
             rows = [list(r) for i, r in df_out.iterrows()]
-            state_column_idx = list(df_out.columns).index(state_column)
-
             first_row = True
+            state_column_idx = list(df_out.columns).index(state_column)
 
             for row in rows:
                 if first_row == False:
@@ -75,22 +78,23 @@ class State_Timer(BaseTransformer):
                         logger.debug("Checking if current row  %s is in state %s" % (state_column_idx, item))
                         if row[4] == item:
                             logger.debug("Match  %s current time  %s and last status time %s" % (
-                                item, row[0], laststatus_timestamp))
-                            mins_running = row[0] - laststatus_timestamp
+                                item, row[1], laststatus_timestamp))
+                            mins_running = row[1] - laststatus_timestamp
                             logger.debug("mins %s" % item)
                             logger.debug(mins_running.total_seconds() / 60)
                             # Update original dataframe with calculated minutes running
                             simulation_data.loc[
-                                (simulation_data['deviceid'] == asset) & (simulation_data['evt_timestamp'] == row[0]), [
+                                (simulation_data[entity_index_name] == asset) & (
+                                            simulation_data[time_index_name] == row[1]), [
                                     item]] = mins_running.total_seconds() / 60
                 else:
                     first_row = False
-                logger.debug("Last status_timestamp %s " % row[0])
-                laststatus_timestamp = row[0]
+                logger.debug("Last status_timestamp %s " % row[01)
+                laststatus_timestamp = row[1]
 
             for item in states:
                 logger.debug("\n -- %s Device total mins running in state %s -- \n" % (asset, item))
-                logger.debug(simulation_data.loc[simulation_data['id'] == asset, item].sum())
+                logger.debug(simulation_data.loc[simulation_data[entity_index_name] == asset, item].sum())
                 logger.debug("\n ---- \n")
 
         logger.debug('simulation_data------')
@@ -98,7 +102,7 @@ class State_Timer(BaseTransformer):
         logger.debug('orig_simulation_data-----')
         logger.debug( orig_simulation_data.head() )
         logger.debug('column of minutes being returned-----')
-        logger.debug(simulation_data[self.state_metric_name])
+        simulation_data.set_index([entity_index_name, time_index_name], inplace=True)
         return simulation_data[self.state_metric_name]
 
 
