@@ -80,7 +80,7 @@ class State_Timer(BaseTransformer):
                     logger.debug("mins_running %s " % mins_running)
                     # Update original dataframe with calculated minutes running
                     df.loc[
-                        (df['deviceid'] == asset) & (
+                        (df[entity_index_name] == asset) & (
                                     df['evt_timestamp'] == row['evt_timestamp']), [
                             row[self.state_column]]] = mins_running.total_seconds() / 60
 
@@ -100,7 +100,13 @@ class State_Timer(BaseTransformer):
         # logger.debug("\n -- iloc -- \n")
         # logger.debug(df.iloc[(df['Age'] < 30).values, [1, 3]])
 
-        logger.debug(df)
+        logger.debug('Finished State Calculations ')
+        for asset in asset_list:
+            logger.debug("Get rows just for single asset %s --" % asset)
+            df_asset = df.loc[df[entity_index_name] == asset]
+            logger.debug("Rows just for %s" %asset )
+            logger.debug(df_asset)
+
         logger.debug('Column we are returning with state_metric_name and minutes |||  ')
         logger.debug(df[self.state_metric_name])
         logger.debug('Final df')
