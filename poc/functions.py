@@ -119,7 +119,13 @@ class State_Timer(BaseTransformer):
         inputs = []
         inputs.append(ui.UISingleItem(name='state_column', datatype=str, description='Name of column (status)  you want to measure state time in minutes.'))
 
-        inputs.append(ui.UISingleItem(name='state_metric_name', datatype=str, description='State name (running) to measure state time in minutes.') )
+        inputs.append(ui.UIMultiItem(name='state_metric_names',
+                                    datatype=float,
+                                    required=True,
+                                    description='State name (running) to measure state time in minutes.',
+                                    output_item='predictions',
+                                    is_output_datatype_derived=True
+                                  ))
         '''
         aggregate_names = list(cls.get_available_methods().keys())
 
