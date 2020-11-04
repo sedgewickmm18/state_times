@@ -38,8 +38,8 @@ class State_Timer(BaseTransformer):
 
         # List unique values in the df['name'] column
         logger.debug('List of Running Status')
-        states = df[self.state_column].unique()
-        logger.debug(states)
+        self.states = df[self.state_column].unique()
+        logger.debug(self.states)
 
         logger.debug("Original Simulation Data looking at rows")
         for index, row in df.iterrows():
@@ -48,7 +48,7 @@ class State_Timer(BaseTransformer):
 
         # Initialize status you need to find running times for
         pd.set_option('display.max_columns', None)
-        for state in states:
+        for state in self.states:
             df[self.state_metric_name] = 0
             df[state] = 0
 
@@ -96,7 +96,7 @@ class State_Timer(BaseTransformer):
                     laststatus_timestamp = row['evt_timestamp']
                 logger.debug("Previous status_timestamp %s " % laststatus_timestamp)
 
-            for item in states:
+            for item in self.states:
                 logger.debug("\n -- %s Device total mins running in state %s -- \n" % (asset, item))
                 logger.debug(df.loc[df[entity_index_name] == asset, item].sum())
                 logger.debug("\n ---- \n")
