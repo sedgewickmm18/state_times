@@ -110,8 +110,8 @@ class State_Timer(BaseTransformer):
         logger.debug('Column we are returning with state_metric_name and minutes |||  ')
         logger.debug(df[self.state_metric_name])
         logger.debug('Final df')
-        logger.debug(df)
-        return df[self.state_metric_name]
+        logger.debug(df[[states]])
+        return df[[states]]
 
     @classmethod
     def build_ui(cls):
