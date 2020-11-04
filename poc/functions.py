@@ -111,10 +111,16 @@ class State_Timer(BaseTransformer):
             logger.debug("Rows just for %s" %asset )
             logger.debug(df_asset)
 
+        # Reset DF the index back to what it was
+        df.set_index([entity_index_name, time_index_name], inplace=True)
+
         logger.debug('Column we are returning with state_metric_name and minutes |||  ')
         logger.debug(states)
         logger.debug(df[states])
-        return df[states]
+
+        logger.debug('Final entire DF we are returning with state_metric_name and minutes |||  ')
+        logger.debug(df)
+        return df
 
     @classmethod
     def build_ui(cls):
