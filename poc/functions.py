@@ -123,9 +123,17 @@ class State_Timer(BaseTransformer):
         aggregate_names = list(cls.get_available_methods().keys())
 
         inputs.append(ui.UISingle(name='state_metric_name',
-                               description='Choose states to measure time of',
+                               description='Choose state to measure time of',
                                values=aggregate_names))
-
+        '''
+        inputs.append(UIMultiItem(name='targets',
+                                  datatype=float,
+                                  required=True,
+                                  output_item='predictions',
+                                  is_output_datatype_derived=True
+                                  ))
+        '''
+        
         # Add output aruguments for each state metric_Name
         outputs = []
         outputs.append(ui.UIFunctionOutSingle(name='state_metric_name', datatype=float, description='Minutes in state'))
