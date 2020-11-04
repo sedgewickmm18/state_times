@@ -100,7 +100,7 @@ class State_Timer(BaseTransformer):
                 logger.debug("\n -- %s Device total mins running in state %s -- \n" % (asset, item))
                 logger.debug(df.loc[df[entity_index_name] == asset, item].sum())
                 logger.debug("\n ---- \n")
-                self.states.append(item)
+                #self.states.append(item)
 
         # logger.debug("\n -- iloc -- \n")
         # logger.debug(df.iloc[(df['Age'] < 30).values, [1, 3]])
