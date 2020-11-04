@@ -32,16 +32,18 @@ class State_Timer(BaseTransformer):
     def execute(self, df ):
         logger.debug("Original Simulation Data to test downtime calculations")
         logger.debug("start df ----- %s " % df)
-        logger.debug("start state_column ----- %s " % self.state_column)
-        logger.debug("start state_metric_name ----- %s " % self.state_metric_name)
-        logger.debug("Original Simulation Data looking at rows")
-        for index, row in df.iterrows():
-            logger.debug(row)
+        logger.debug("start df ----- %s " % df.columns)
+        logger.debug("start state_column  ----- %s " %self.state_column)
+        logger.debug("start print state_metric_name %s " %self.state_metric_name)
 
         # List unique values in the df['name'] column
         logger.debug('List of Running Status')
-        states = df[self.state_column].unique()
+        states = logger.debug[self.state_column].unique()
         logger.debug(states)
+
+        logger.debug("Original Simulation Data looking at rows")
+        for index, row in df.iterrows():
+            logger.debug(row)
 
         # Initialize status you need to find running times for
         pd.set_option('display.max_columns', None)
