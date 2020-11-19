@@ -90,7 +90,6 @@ class State_Timer(BaseTransformer):
                     mins = mins_running.total_seconds() / 60
                     logger.debug("mins are %s " %mins)
                     logger.debug("self.state_column is  %s " %self.state_column)
-                    logger.debug(df.loc[df[entity_index_name] == asset, item].sum())
 
                     # Update original dataframe with calculated minutes running
                     df.loc[
