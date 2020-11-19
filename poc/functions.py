@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 PACKAGE_URL = 'git+https://github.com/carlosibm/state_times'
 
 
-class State_TimerV2(BaseTransformer):
+class State_Timer(BaseTransformer):
     '''
     For a selected metric calculates the amount of time in minutes it has been in that  state since the last change in state.
     '''
@@ -128,6 +128,9 @@ class State_TimerV2(BaseTransformer):
         inputs = []
         inputs.append(ui.UISingleItem(name='state_column', datatype=str, description='Name of column (status)  you want to measure state time in minutes.'))
 
+        inputs.append(ui.UISingle(name='state_metric_name', datatype=str,  description='Choose state to measure time of'))
+
+        '''
         inputs.append(ui.UIMultiItem(name='state_metric_names',
                                     datatype=float,
                                     required=True,
@@ -135,12 +138,8 @@ class State_TimerV2(BaseTransformer):
                                     output_item='predictions',
                                     is_output_datatype_derived=True
                                   ))
-        '''
         aggregate_names = list(cls.get_available_methods().keys())
 
-        inputs.append(ui.UISingle(name='state_metric_name',
-                               description='Choose state to measure time of',
-                               values=aggregate_names))
 
         inputs.append(UIMultiItem(name='targets',
                                   datatype=float,
