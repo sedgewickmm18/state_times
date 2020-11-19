@@ -21,15 +21,15 @@ class State_Timer(BaseTransformer):
     For a selected metric calculates the amount of time in minutes it has been in that  state since the last change in state.
     '''
 
-    def __init__(self, state_column, state_metric_name):
-        logger.debug( 'state_column= %s  state_metric_name= %s ' %(state_column, state_metric_name) )
+    def __init__(self, state_column, state_name, state_metric_name):
+        logger.debug( 'state_column= %s  state_name= %s ' %(state_column, state_name) )
         # Input column that has status of the system liked stopped or running  0 or 1
         self.state_column = state_column
-        # Output column  metric_name that  time in minutes will be returned for
-        self.state_metric_name = state_metric_name
-        # Output column   time in minutes for state of metric_name
-        #self.state_times = state_time
-        self.states = []
+        # Output   state_name that time in minutes will be returned for
+        self.state_name = state_name.lower()
+        # Output metric name  time in minutes for state will be put in.
+        self.state_metric_name = state_metric_name.lower()
+        #self.states = []
         super().__init__()
 
     def execute(self, df ):
@@ -37,7 +37,9 @@ class State_Timer(BaseTransformer):
         logger.debug("start df ----- %s " % df)
         logger.debug("start df ----- %s " % df.columns)
         logger.debug("start state_column  ----- %s " %self.state_column)
-        logger.debug("start print state_metric_name %s " %self.state_metric_name)
+        logger.debug("start print state_name %s " %self.state_name)
+        logger.debug("start print state_metric_name %s " % self.state_metric_name)
+
 
         # List unique values in the df['name'] column
         logger.debug('List of Running Status')
@@ -52,7 +54,7 @@ class State_Timer(BaseTransformer):
         # Initialize status you need to find running times for
         pd.set_option('display.max_columns', None)
         for state in states:
-            df[self.state_metric_name] = 0
+            df[self.state_name] = 0
             df[state] = 0
 
         logger.debug("Debugging")
@@ -87,6 +89,8 @@ class State_Timer(BaseTransformer):
                     logger.debug("mins_running %s " % mins_running)
                     mins = mins_running.total_seconds() / 60
                     logger.debug("mins are %s " %mins)
+                    logger.debug("self.state_column is  %s " %self.state_column)
+                    logger.debug(df.loc[df[entity_index_name] == asset, item].sum())
 
                     # Update original dataframe with calculated minutes running
                     df.loc[
@@ -99,7 +103,7 @@ class State_Timer(BaseTransformer):
                                 df['evt_timestamp'] == row['evt_timestamp']), [
                             row[self.state_column]]] )
 
-                    # df.loc[(df['deviceid'] == asset) & (df['evt_timestamp'] == row['evt_timestamp'], df[self.state_metric_name]  = mins_running.total_seconds() / 60
+                    # df.loc[(df['deviceid'] == asset) & (df['evt_timestamp'] == row['evt_timestamp'], df[self.state_name]  = mins_running.total_seconds() / 60
                 else:
                     logger.debug("First Row")
                     logger.debug(row['evt_timestamp'], row[df[entity_index_name]], row[self.state_column])
@@ -125,11 +129,12 @@ class State_Timer(BaseTransformer):
         # Reset DF the index back to what it was
         df.set_index([entity_index_name, time_index_name], inplace=True)
 
-        logger.debug('Column we are returning with state_metric_name and minutes |||  ')
-        logger.debug(states)
-        logger.debug(df[states])
-
-        logger.debug('Final entire DF we are returning with state_metric_name and minutes |||  ')
+        # Assign state_metric_name with minutes for the state they want time for
+        logger.debug('Column we are returning with state_name and minutes |||  ')
+        df[self.state_metric_name] = df[self.state_name]
+        logger.debug('df[state_metric_name]')
+        logger.debug(df[self.state_metric_name])
+        logger.debug('Final entire DF we are returning with state_name and minutes |||  ')
         logger.debug(df)
         return df
 
@@ -139,10 +144,11 @@ class State_Timer(BaseTransformer):
         inputs = []
         inputs.append(ui.UISingleItem(name='state_column', datatype=str, description='Name of column (status)  you want to measure state time in minutes.'))
 
-        inputs.append(ui.UISingle(name='state_metric_name', datatype=str,  description='Enter name of the state to measure time of'))
+        inputs.append(ui.UISingle(name='state_name', datatype=str,  description='Enter name of the state to measure time of'))
+        inputs.append(ui.UISingle(name='state_metric_name', datatype=str, description='Enter output metric name to put state time in. '))
 
         '''
-        inputs.append(ui.UIMultiItem(name='state_metric_names',
+        inputs.append(ui.UIMultiItem(name='state_names',
                                     datatype=float,
                                     required=True,
                                     description='State name (running) to measure state time in minutes.',
