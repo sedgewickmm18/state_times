@@ -5,8 +5,8 @@ from iotfunctions import ui
 from iotfunctions.base import BaseTransformer
 #from .ui import (UISingle, UIMultiItem, UIFunctionOutSingle, UISingleItem, UIFunctionOutMulti)
 from iotfunctions.ui import UIFunctionOutSingle
-from iotfunctions.enginelog import EngineLogging
-EngineLogging.configure_console_logging(logging.DEBUG)
+#from iotfunctions.enginelog import EngineLogging
+#ßEngineLogging.configure_console_logging(logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 
