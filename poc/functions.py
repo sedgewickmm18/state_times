@@ -85,11 +85,19 @@ class State_Timer(BaseTransformer):
                     laststatus_timestamp = row['evt_timestamp']
                     logger.debug("New status_timestamp %s " % laststatus_timestamp)
                     logger.debug("mins_running %s " % mins_running)
+                    mins = mins_running.total_seconds() / 60
+                    logger.debug("mins are %s " %mins)
+
                     # Update original dataframe with calculated minutes running
                     df.loc[
                         (df[entity_index_name] == asset) & (
                                     df['evt_timestamp'] == row['evt_timestamp']), [
                             row[self.state_column]]] = mins_running.total_seconds() / 60
+                    logger.debug("state column ")
+                    logger.debug( df.loc[
+                        (df[entity_index_name] == asset) & (
+                                df['evt_timestamp'] == row['evt_timestamp']), [
+                            row[self.state_column]]] )
 
                     # df.loc[(df['deviceid'] == asset) & (df['evt_timestamp'] == row['evt_timestamp'], df[self.state_metric_name]  = mins_running.total_seconds() / 60
                 else:
