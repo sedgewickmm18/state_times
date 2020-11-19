@@ -5,6 +5,9 @@ from iotfunctions import ui
 from iotfunctions.base import BaseTransformer
 #from .ui import (UISingle, UIMultiItem, UIFunctionOutSingle, UISingleItem, UIFunctionOutMulti)
 from iotfunctions.ui import UIFunctionOutSingle
+from iotfunctions.enginelog import EngineLogging
+EngineLogging.configure_console_logging(logging.DEBUG)
+
 logger = logging.getLogger(__name__)
 
 # Specify the URL to your package here.
@@ -128,7 +131,7 @@ class State_Timer(BaseTransformer):
         inputs = []
         inputs.append(ui.UISingleItem(name='state_column', datatype=str, description='Name of column (status)  you want to measure state time in minutes.'))
 
-        inputs.append(ui.UISingle(name='state_metric_name', datatype=str,  description='Choose state to measure time of'))
+        inputs.append(ui.UISingle(name='state_metric_name', datatype=str,  description='Enter name of the state to measure time of'))
 
         '''
         inputs.append(ui.UIMultiItem(name='state_metric_names',
