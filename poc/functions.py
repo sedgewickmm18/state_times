@@ -153,12 +153,5 @@ class State_TimerV2(BaseTransformer):
         # Add output aruguments for each state metric_Name
         outputs = []
         outputs.append(ui.UIFunctionOutSingle(name='state_metric_name', datatype=float, description='Minutes in state'))
-
         return (inputs, outputs)
 
-    @classmethod
-    def get_available_methods(cls):
-        return {
-            'RUNNING': 'RUNNING',
-            'STOPPED': 'STOPPED'
-        }
