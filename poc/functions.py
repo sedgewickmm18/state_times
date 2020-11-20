@@ -26,9 +26,9 @@ class State_Timer(BaseTransformer):
         # Input column that has status of the system liked stopped or running  0 or 1
         self.state_column = state_column
         # Output   state_name that time in minutes will be returned for
-        self.state_name = state_name.lower()
+        self.state_name = state_name
         # Output metric name  time in minutes for state will be put in.
-        self.state_metric_name = state_metric_name.lower()
+        self.state_metric_name = state_metric_name
         #self.states = []
         super().__init__()
 
