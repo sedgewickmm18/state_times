@@ -131,6 +131,7 @@ class State_Timer(BaseTransformer):
         # Assign state_metric_name with minutes for the state they want time for
         logger.debug('Column we are returning with state_name and minutes |||  ')
         df[self.state_metric_name] = df[self.state_name]
+
         logger.debug('df[state_metric_name]')
         logger.debug(df[self.state_metric_name])
         logger.debug('Final entire DF we are returning with state_name and minutes |||  ')
