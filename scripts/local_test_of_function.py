@@ -3,7 +3,7 @@ import logging
 import datetime as dt
 from iotfunctions.db import Database
 from iotfunctions.enginelog import EngineLogging
-from poc.functions import State_Timer
+from poc.functions import State_TimerV2
 import pandas as pd
 from scripts.test_entities import Equipment
 from iotfunctions.pipeline import JobController
@@ -27,8 +27,8 @@ entity = Equipment(name = entity_type_name,
 entity.register(raise_error=False)
 
 #Register function so that you can see it in the UI
-db.unregister_functions(["State_Timer"])
-db.register_functions([State_Timer])
+#db.unregister_functions(["State_Timer"])
+db.register_functions([State_TimerV2])
 
 
 meta = db.get_entity_type(entityType)
@@ -52,7 +52,7 @@ print(df.head())
 
 print ( "Done registering  entity" )
 
-fn = State_Timer(state_column='runningstatus', state_metric_name='RUNNING')
+fn = State_TimerV2(state_column='runningstatus', state_metric_name='RUNNING')
 df = fn.execute_local_test(db=db, db_schema=db_schema, generate_days=1,to_csv=True)
 print(df)
 
