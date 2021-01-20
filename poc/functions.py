@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 PACKAGE_URL = 'git+https://github.com/carlosibm/state_times'
 
 
-class State_Timer(BaseTransformer):
+class State_TimerV2(BaseTransformer):
     '''
     For a selected metric calculates the amount of time in minutes it has been in that  state since the last change in state.
     '''

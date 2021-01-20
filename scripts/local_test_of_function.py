@@ -8,15 +8,16 @@ import pandas as pd
 from scripts.test_entities import Equipment
 from iotfunctions.pipeline import JobController
 
-EngineLogging.configure_console_logging(logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 with open('credentials_Monitor-Demo2.json', encoding='utf-8') as F:
     credentials = json.loads(F.read())
 db_schema = 'bluadmin'
 db = Database(credentials=credentials)
-entity_type_name = 'Test_Compressors'
+entity_type_name = 'Container5'
 entityType = entity_type_name
+# Use create_entities_usingcsv.py to create Entity Type.
+'''
 #db.drop_table(entity_type_name, schema = db_schema)
 entity = Equipment(name = entity_type_name,
                 db = db,
@@ -25,12 +26,11 @@ entity = Equipment(name = entity_type_name,
                 )
 
 entity.register(raise_error=False)
-
+'''
 #Register function so that you can see it in the UI
 #db.unregister_functions(["State_Timer"])
-db.register_functions([State_TimerV2])
-
-
+#db.register_functions([State_TimerV2])
+'''
 meta = db.get_entity_type(entityType)
 jobsettings = {'_production_mode': False,
                '_start_ts_override': dt.datetime.utcnow() - dt.timedelta(days=10),
@@ -43,16 +43,17 @@ logger.info('Instantiated create compressor job')
 job = JobController(meta, **jobsettings)
 
 entity.exec_local_pipeline()
-'''
-view entity data
-'''
+
 print ( "Read Table of new  entity" )
 df = db.read_table(table_name=entity_type_name, schema=db_schema)
 print(df.head())
+'''
 
 print ( "Done registering  entity" )
 
-fn = State_TimerV2(state_column='runningstatus', state_metric_name='RUNNING')
+
+#  Allows you to run and test one function locally.
+fn = State_TimerV2(state_column='running_status', state_name="RUNNING" ,state_metric_name='running_minutes')
 df = fn.execute_local_test(db=db, db_schema=db_schema, generate_days=1,to_csv=True)
 print(df)
 
