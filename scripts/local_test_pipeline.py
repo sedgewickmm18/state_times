@@ -3,7 +3,7 @@ import logging
 import datetime as dt
 from iotfunctions.db import Database
 from iotfunctions.enginelog import EngineLogging
-from poc.functions import State_TimerV2
+from poc.functions import State_Timer
 import pandas as pd
 from scripts.test_entities import Equipment
 from iotfunctions.pipeline import JobController

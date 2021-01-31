@@ -3,7 +3,7 @@ import logging
 import datetime as dt
 from iotfunctions.db import Database
 from iotfunctions.enginelog import EngineLogging
-from poc.functions import State_TimerV2
+from poc.functions import State_Timer
 import pandas as pd
 from scripts.test_entities import Equipment
 from iotfunctions.pipeline import JobController
@@ -53,7 +53,7 @@ print ( "Done registering  entity" )
 
 
 #  Allows you to run and test one function locally.
-fn = State_TimerV2(state_column='running_status', state_name="RUNNING" ,state_metric_name='running_minutes')
+fn = State_Timer(state_column='running_status', state_name="RUNNING" ,state_metric_name='running_minutes')
 df = fn.execute_local_test(db=db, db_schema=db_schema, generate_days=1,to_csv=True)
 print(df)
 
