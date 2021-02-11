@@ -41,6 +41,7 @@ class State_Timer(BaseTransformer):
         logger.debug("start print state_metric_name %s " % self.state_metric_name)
 
 
+
         # List unique values in the df['name'] column
         logger.debug('List of Running Status')
         states = df[self.state_column].unique()
@@ -61,7 +62,11 @@ class State_Timer(BaseTransformer):
         entity_index_name = df.index.names[0]
         time_index_name = df.index.names[1]
         df.reset_index(inplace=True)
-        logger.debug('Here are entity_index_name, time_index_name, df.columns ', entity_index_name, time_index_name, df.columns)
+        logger.debug("Here is time_index_name %s"  %time_index_name)
+        logger.debug("Here is entity_index_name %s"  %entity_index_name)
+        logger.debug("Here are df.columns")
+        logger.debug(df.columns)
+
         asset_list = df[entity_index_name].unique().tolist()
         logger.debug("List of unique equipment")
         logger.debug(asset_list)
@@ -80,11 +85,11 @@ class State_Timer(BaseTransformer):
             for index, row in df_asset.iterrows():
                 if first_row == False:
                     logger.debug("iterate rows")
-                    logger.debug(row['evt_timestamp'], row[df[entity_index_name]], row[self.state_column])
+                    logger.debug(row[time_index_name], row[df[entity_index_name]], row[self.state_column])
 
                     # Calculate mins running
-                    mins_running = row['evt_timestamp'] - laststatus_timestamp
-                    laststatus_timestamp = row['evt_timestamp']
+                    mins_running = row[time_index_name] - laststatus_timestamp
+                    laststatus_timestamp = row[time_index_name]
                     logger.debug("New status_timestamp %s " % laststatus_timestamp)
                     logger.debug("mins_running %s " % mins_running)
                     mins = mins_running.total_seconds() / 60
@@ -94,20 +99,20 @@ class State_Timer(BaseTransformer):
                     # Update original dataframe with calculated minutes running
                     df.loc[
                         (df[entity_index_name] == asset) & (
-                                    df['evt_timestamp'] == row['evt_timestamp']), [
+                                    df[time_index_name] == row[time_index_name]), [
                             row[self.state_column]]] = mins_running.total_seconds() / 60
                     logger.debug("state column ")
                     logger.debug( df.loc[
                         (df[entity_index_name] == asset) & (
-                                df['evt_timestamp'] == row['evt_timestamp']), [
+                                df[time_index_name] == row[time_index_name]), [
                             row[self.state_column]]] )
 
                     # df.loc[(df['deviceid'] == asset) & (df['evt_timestamp'] == row['evt_timestamp'], df[self.state_name]  = mins_running.total_seconds() / 60
                 else:
                     logger.debug("First Row")
-                    logger.debug(row['evt_timestamp'], row[df[entity_index_name]], row[self.state_column])
+                    logger.debug(row[time_index_name], row[df[entity_index_name]], row[self.state_column])
                     first_row = False
-                    laststatus_timestamp = row['evt_timestamp']
+                    laststatus_timestamp = row[time_index_name]
                 logger.debug("Previous status_timestamp %s " % laststatus_timestamp)
 
             for item in states:
