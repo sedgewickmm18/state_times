@@ -107,11 +107,13 @@ class State_Timer(BaseTransformer):
                         (df[entity_index_name] == asset) & (
                                     df[time_index_name] == row[time_index_name]), [
                             row[self.state_column]]] = mins_running.total_seconds() / 60
+                    '''
                     logger.debug("state column ")
                     logger.debug( df.loc[
                         (df[entity_index_name] == asset) & (
                                 df[time_index_name] == row[time_index_name]), [
                             row[self.state_column]]] )
+                    '''
 
                     # df.loc[(df['deviceid'] == asset) & (df['evt_timestamp'] == row['evt_timestamp'], df[self.state_name]  = mins_running.total_seconds() / 60
                 else:
@@ -120,7 +122,7 @@ class State_Timer(BaseTransformer):
                     first_row = False
                     laststatus_timestamp = row[time_index_name]
 
-                logger.debug("Previous status_timestamp %s " % laststatus_timestamp)
+                #logger.debug("Previous status_timestamp %s " % laststatus_timestamp)
 
             for item in states:
                 logger.debug("\n -- %s Device total mins running in state %s -- \n" % (asset, item))
