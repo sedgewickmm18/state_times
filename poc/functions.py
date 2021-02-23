@@ -46,9 +46,10 @@ class State_Timer(BaseTransformer):
         logger.debug('List of Running Status')
         states = df[self.state_column].unique()
         logger.debug(states)
-        
-        '''
+
         logger.debug("Original Simulation Data looking at rows")
+
+        '''
         for index, row in df.iterrows():
             logger.debug("original rows")
             logger.debug(row)
@@ -86,17 +87,20 @@ class State_Timer(BaseTransformer):
 
             for index, row in df_asset.iterrows():
                 if first_row == False:
-                    logger.debug("iterate rows")
-                    logger.debug(row[time_index_name], row[df[entity_index_name]], row[self.state_column])
+                    #logger.debug("iterate rows")
+                    #logger.debug(row[time_index_name], row[df[entity_index_name]], row[self.state_column])
 
                     # Calculate mins running
                     mins_running = row[time_index_name] - laststatus_timestamp
                     laststatus_timestamp = row[time_index_name]
-                    logger.debug("New status_timestamp %s " % laststatus_timestamp)
-                    logger.debug("mins_running %s " % mins_running)
+
+                    #logger.debug("New status_timestamp %s " % laststatus_timestamp)
+                    #logger.debug("mins_running %s " % mins_running)
+
                     mins = mins_running.total_seconds() / 60
-                    logger.debug("mins are %s " %mins)
-                    logger.debug("self.state_column is  %s " %self.state_column)
+
+                    #logger.debug("mins are %s " %mins)
+                    #logger.debug("self.state_column is  %s " %self.state_column)
 
                     # Update original dataframe with calculated minutes running
                     df.loc[
@@ -115,6 +119,7 @@ class State_Timer(BaseTransformer):
                     logger.debug(row[time_index_name], row[df[entity_index_name]], row[self.state_column])
                     first_row = False
                     laststatus_timestamp = row[time_index_name]
+
                 logger.debug("Previous status_timestamp %s " % laststatus_timestamp)
 
             for item in states:
