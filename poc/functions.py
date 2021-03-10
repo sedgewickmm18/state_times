@@ -118,7 +118,7 @@ class State_Timer(BaseTransformer):
                     # df.loc[(df['deviceid'] == asset) & (df['evt_timestamp'] == row['evt_timestamp'], df[self.state_name]  = mins_running.total_seconds() / 60
                 else:
                     logger.debug("First Row")
-                    logger.debug(row[time_index_name], row[df[entity_index_name]], row[self.state_column])
+                    print(row[time_index_name], row[df[entity_index_name]], row[self.state_column])
                     first_row = False
                     laststatus_timestamp = row[time_index_name]
 
